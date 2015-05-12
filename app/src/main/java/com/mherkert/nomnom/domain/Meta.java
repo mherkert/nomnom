@@ -1,6 +1,8 @@
 package com.mherkert.nomnom.domain;
 
-public class Meta {
+import java.io.Serializable;
+
+public class Meta implements Serializable{
     String color;
 
     public Meta(String color) {

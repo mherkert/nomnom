@@ -1,122 +1,80 @@
 package com.mherkert.nomnom.fragments;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.GridView;
-import android.widget.Toast;
 
+import com.etsy.android.grid.StaggeredGridView;
 import com.mherkert.nomnom.R;
-import com.mherkert.nomnom.domain.Meta;
-import com.mherkert.nomnom.domain.Recipe;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
+import com.mherkert.nomnom.domain.Recipes;
 
 public class RecipesFragment extends Fragment {
 
     private static final String TAG = RecipesFragment.class.getSimpleName();
 
-    private RecipeViewAdapter mAdapter;
-    private List<Recipe> mRecipes;
+    private static final String RECIPES_KEY = "RECIPES";
+
+    public interface RecipeFragmentCallbacks {
+        void onRecipeItemSelected(int position);
+    }
+
+    private Recipes mRecipes;
+    private RecipeFragmentCallbacks mCallback;
+
+    public static RecipesFragment newInstance(Recipes recipes) {
+        RecipesFragment fragment = new RecipesFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(RECIPES_KEY, recipes);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        Bundle data = getArguments();
+        mRecipes = (Recipes) data.getSerializable(RECIPES_KEY);
         return inflater.inflate(R.layout.fragment_recipes, container, false);
 
     }
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // TODO retain data
-
-        String text = loadData(R.raw.recipes);
-        try {
-            mRecipes = parseRecipes(text);
-        } catch (JSONException e) {
-            Log.i(TAG, "JSONException");
-        }
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        GridView gridView = (GridView) getActivity().findViewById(R.id.recipesGrid);
+        StaggeredGridView gridView = (StaggeredGridView) getActivity().findViewById(R.id.recipesGrid);
 
-        mAdapter = new RecipeViewAdapter(getActivity(), mRecipes);
+        RecipeViewAdapter mAdapter = new RecipeViewAdapter(getActivity(), mRecipes.getRecipes());
         gridView.setAdapter(mAdapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, android.view.View v,
                                     int position, long id) {
 
-                Toast.makeText(getActivity(), "TODO: Open Recipe View", Toast.LENGTH_LONG).show();
+                mCallback.onRecipeItemSelected(position);
             }
         });
-
     }
 
-    private String loadData(int id) {
-        InputStream inputStream = getActivity().getResources().openRawResource(id);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-
-        StringBuilder builder = new StringBuilder();
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
 
         try {
+            mCallback = (RecipeFragmentCallbacks) activity;
 
-            String line = "";
-            while ((line = reader.readLine()) != null) {
-
-                builder.append(line);
-            }
-
-        } catch (IOException e) {
-            Log.i(TAG, "IOException");
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement RecipeFragmentCallbacks");
         }
-
-        return builder.toString();
-    }
-
-    private List<Recipe> parseRecipes(String text) throws JSONException {
-
-        JSONArray jsonRecipes = new JSONArray(text);
-        List<Recipe> recipes = new ArrayList<>(jsonRecipes.length());
-
-        for (int i = 0; i < jsonRecipes.length(); i++) {
-            JSONObject recipeObject = (JSONObject) jsonRecipes.get(i);
-            String description = recipeObject.optString("description");
-            Recipe recipe = new Recipe(recipeObject.getString("title"), description);
-
-            JSONArray ingredients = recipeObject.getJSONArray("ingredients");
-            for (int j = 0; j < ingredients.length(); j++) {
-                recipe.addIngredient(ingredients.getString(j));
-            }
-            JSONArray instructions = recipeObject.getJSONArray("instructions");
-            for (int j = 0; j < instructions.length(); j++) {
-                recipe.addInstruction(instructions.getString(j));
-            }
-            JSONObject metaObject = recipeObject.getJSONObject("meta");
-            recipe.setMeta(new Meta(metaObject.getString("color")));
-
-            recipes.add(recipe);
-        }
-
-        return recipes;
     }
 }

@@ -6,6 +6,8 @@
     <color name="green">#FFCCFF66</color>
     <color name="blue">#FF66CCFF</color>
 
+    <color name="actionbar_background">#FF6DA820</color>
+
     <array name="rainbow">
         <item>@color/red</item>
         <item>@color/orange</item>

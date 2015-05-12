@@ -1,9 +1,10 @@
 package com.mherkert.nomnom.domain;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Recipe {
+public class Recipe implements Serializable{
     String title;
     String description;
     List<String> ingredients;
@@ -35,6 +36,11 @@ public class Recipe {
     }
 
     public String getTitle() {
+        return title;
+    }
+
+    @Override
+    public String toString(){
         return title;
     }
 

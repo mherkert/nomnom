@@ -1,30 +1,33 @@
 package com.mherkert.nomnom;
 
 import android.app.Activity;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.content.Context;
-import android.os.Build;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.view.Gravity;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v4.widget.DrawerLayout;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
 
+import com.mherkert.nomnom.domain.Recipes;
+import com.mherkert.nomnom.fragments.NavigationDrawerFragment;
+import com.mherkert.nomnom.fragments.RecipeFragment;
 import com.mherkert.nomnom.fragments.RecipesFragment;
+import com.mherkert.nomnom.parser.RecipesParser;
+import com.mherkert.nomnom.utils.FileUtils;
+
+import org.json.JSONException;
 
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+public class MainActivity extends LifecycleLoggingActivity
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks, RecipesFragment.RecipeFragmentCallbacks {
 
+    private static final String TAG = MainActivity.class.getSimpleName();
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -35,7 +38,12 @@ public class MainActivity extends AppCompatActivity
      */
     private CharSequence mTitle;
 
-    private Fragment mRecipesFragment;
+    private Recipes mRecipes;
+
+    private RecipesFragment mRecipesFragment;
+    private RecipeFragment mRecipeFragment;
+
+    private RecipesParser parser = new RecipesParser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +59,21 @@ public class MainActivity extends AppCompatActivity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
-        mRecipesFragment = new RecipesFragment();
+
+        // TODO retain data
+        String text = FileUtils.loadData(this, R.raw.recipes);
+        try {
+            mRecipes = new Recipes(parser.toDomain(text));
+        } catch (JSONException e) {
+            Log.i(TAG, "JSONException");
+        }
+
+        // TODO retain instances?
+//        mRecipesFragment = new RecipesFragment();
+//        Bundle data = new Bundle();
+//        data.putSerializable("RECIPES", mRecipes);
+//        mRecipeFragment.setArguments(data);
+        mRecipesFragment = RecipesFragment.newInstance(mRecipes);
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.container, mRecipesFragment)
@@ -116,6 +138,22 @@ public class MainActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onRecipeItemSelected(int position) {
+        Log.d(TAG, "Selected recipe item at position " + position);
+        if (mRecipeFragment == null)
+            mRecipeFragment = new RecipeFragment();
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.container, mRecipeFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+        fragmentManager.executePendingTransactions();
+
+        mRecipeFragment.updateRecipeDisplay(this, mRecipes.getRecipes().get(position));
     }
 
     /**

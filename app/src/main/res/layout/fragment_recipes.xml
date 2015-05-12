@@ -1,21 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="course.labs.dailyselfie.MainActivity" >
+    android:layout_height="match_parent" >
 
-    <GridView
+    <com.etsy.android.grid.StaggeredGridView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/recipesGrid"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:useDefaultMargins="true"
-        android:numColumns="2" >
-
-    </GridView>
+        android:layout_height="match_parent"
+        app:item_margin="@dimen/grid_layout_item_margin"
+        app:column_count="2" />
 
 </RelativeLayout>
