@@ -6,7 +6,53 @@
     <color name="green">#FFCCFF66</color>
     <color name="blue">#FF66CCFF</color>
 
-    <color name="actionbar_background">#FF6DA820</color>
+    <!--<color name="actionbar_background">#FF6DA820</color>-->
+
+    <color name="view_shadow">#7F000000</color>
+
+    <!-- Color theme green -->
+    <!--<color name="background_green">#FFEEF8A6</color>-->
+    <color name="background_green">#FFFAFDE4</color>
+    <color name="button_green">#FF485300</color>
+    <color name="actionbar_background_green">#FF6F7C15</color>
+    <color name="item_border_green">#FF97A637</color>
+    <color name="item_green_green">#FFC2CF68</color>
+
+    <color name="item_green_rose">#FFE094AF</color>
+    <color name="item_border_green_rose">#FFBA5C7E</color>
+
+    <color name="item_green_red">#FFFA7C5B</color>
+    <color name="item_border_green_red">#FFE55934</color>
+
+    <color name="item_green_purple">#FFAFA0C6</color>
+    <!--<color name="item_green_purple">#FF8D78AE</color>-->
+    <color name="item_border_green_purple">#FF684E91</color>
+
+    <color name="item_green_brown">#FFD5856C</color>
+    <color name="item_border_green_brown">#FFAB553A</color>
+
+    <color name="item_green_yellow">#FFFDF86A</color>
+    <color name="item_border_green_yellow">#FFE0DB42</color>
+
+    <!--<color name="item_green_blue">#FF767EA4</color>-->
+    <color name="item_green_blue">#FF9FA5BF</color>
+    <color name="item_border_green_blue">#FF515B89</color>
+
+    <!-- Color theme brown -->
+    <color name="background_brown">#FFFFD6AA</color>
+    <color name="button_brown">#FF552C00</color>
+    <color name="actionbar_background_brown">#FF804C15</color>
+    <color name="item_border_brown">#FFAA7339</color>
+    <color name="item_brown_brown">#FFD4A16A</color>
+
+    <!-- Color theme red -->
+    <color name="background_red">#FFFBA7AB</color>
+    <color name="button_red">#FF540004</color>
+    <color name="actionbar_background_red">#FF7D151A</color>
+    <color name="item_border_red">#FFA7383D</color>
+    <color name="item_red_red">#FFD1686E</color>
+
+
 
     <array name="rainbow">
         <item>@color/red</item>

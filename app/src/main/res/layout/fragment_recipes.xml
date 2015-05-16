@@ -1,15 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent">
 
-    <com.etsy.android.grid.StaggeredGridView
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <com.etsy.android.grid.StaggeredGridView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/recipesGrid"
+        android:id="@+id/recipes_grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:item_margin="@dimen/grid_layout_item_margin"
-        app:column_count="2" />
+        app:column_count="2"
+        app:item_margin="@dimen/grid_layout_item_margin" />
+
+    <!--test-->
+    <RelativeLayout
+        android:id="@+id/floating_action_menu_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.getbase.floatingactionbutton.FloatingActionsMenu
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/floating_action_menu"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            app:fab_addButtonColorNormal="@color/button_green"
+            app:fab_addButtonColorPressed="@color/button_green"
+            app:fab_labelsPosition="left">
+
+            <!--TODO: can't set image size: app:fab_size="@dimen/fab_size_mini"-->
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/add_recipe_from_text_button"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:fab_icon="@drawable/ic_action_view_as_list"
+                app:fab_colorNormal="@color/background_green"
+                app:fab_colorPressed="@color/background_green"
+                app:fab_expandDirection="up" />
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/add_recipe_from_image_button"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:fab_icon="@drawable/ic_action_camera"
+                app:fab_colorNormal="@color/background_green"
+                app:fab_colorPressed="@color/background_green"
+                app:fab_expandDirection="up" />
+
+        </com.getbase.floatingactionbutton.FloatingActionsMenu>
+    </RelativeLayout>
 
 </RelativeLayout>

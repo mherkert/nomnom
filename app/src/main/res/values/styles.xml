@@ -1,32 +1,20 @@
 <resources>
-
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="@style/Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-    </style>
-
-    <!--<style name="Theme.AppCompat.Light.DarkActionBar" parent="Base.Theme.AppCompat.Light.DarkActionBar" />-->
-
-    <style name="Divider">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">5dp</item>
-        <item name="android:background">?android:attr/listDivider</item>
-        <!--<item name="android:layout_margin">50dp</item>-->
-        <!--<item name="android:padding">50dp</item>-->
-        <!--<item name="android:layout_marginTop">15dp</item>-->
-        <!--<item name="android:layout_marginBottom">15dp</item>-->
-    </style>
-
-
-    <style name="CustomActionBarTheme"
-        parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:windowBackground">@color/background_green</item>
+        <item name="android:colorBackground">@color/background_green</item>
         <item name="android:actionBarStyle">@style/NomNomActionBar</item>
+
+        <!-- Support library compatibility -->
+        <item name="actionBarStyle">@style/NomNomActionBar</item>
     </style>
 
     <!-- ActionBar styles -->
-    <style name="NomNomActionBar"
-        parent="ThemeOverlay.AppCompat.Dark.ActionBar">
-        <item name="android:background">@color/actionbar_background</item>
-    </style>
+    <style name="NomNomActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">@color/actionbar_background_green</item>
 
+        <!-- Support library compatibility -->
+        <item name="background">@color/actionbar_background_green</item>
+    </style>
 </resources>

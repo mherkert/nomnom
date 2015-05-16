@@ -39,11 +39,14 @@ public class RecipeFragment extends Fragment {
         if (recipe.getDescription() != null && !recipe.getDescription().isEmpty())
             mLinearLayout.addView(RecipeViewFactory.getDescriptionView(context, recipe.getDescription()));
 
-        mLinearLayout.addView(RecipeViewFactory.getDividerView(getLayoutInflater(null))); // TODO really? null?
+        mLinearLayout.addView(RecipeViewFactory.getDividerView(context));
+
+
         for (String ingredient : recipe.getIngredients()) {
             mLinearLayout.addView(RecipeViewFactory.getIngredientView(context, ingredient));
         }
-        mLinearLayout.addView(RecipeViewFactory.getDividerView(getLayoutInflater(null)));
+
+        mLinearLayout.addView(RecipeViewFactory.getDividerView(context));
 
         for (String instruction : recipe.getInstructions()) {
             mLinearLayout.addView(RecipeViewFactory.getInstructionView(context, instruction));

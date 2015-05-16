@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 
 import com.etsy.android.grid.StaggeredGridView;
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.mherkert.nomnom.R;
 import com.mherkert.nomnom.domain.Recipes;
 
@@ -51,7 +52,14 @@ public class RecipesFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        StaggeredGridView gridView = (StaggeredGridView) getActivity().findViewById(R.id.recipesGrid);
+        StaggeredGridView gridView = (StaggeredGridView) getActivity().findViewById(R.id.recipes_grid);
+
+        FloatingActionButton addFromImageBtn = (FloatingActionButton) getActivity().findViewById(R.id.add_recipe_from_image_button);
+        FloatingActionButton addFromTextBtn = (FloatingActionButton) getActivity().findViewById(R.id.add_recipe_from_text_button);
+
+        // setting size in xml causes exception like https://code.google.com/p/android/issues/detail?id=60055
+        addFromImageBtn.setSize(FloatingActionButton.SIZE_MINI);
+        addFromTextBtn.setSize(FloatingActionButton.SIZE_MINI);
 
         RecipeViewAdapter mAdapter = new RecipeViewAdapter(getActivity(), mRecipes.getRecipes());
         gridView.setAdapter(mAdapter);
