@@ -3,6 +3,8 @@ package com.mherkert.nomnom.fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,6 +52,13 @@ public class RecipeViewAdapter extends BaseAdapter {
             viewHolder.textViewItem.setText(Html.fromHtml(mRecipes.get(position).toHtmlSummary()));
             viewHolder.textViewItem.setBackgroundColor(Color.parseColor(recipe.getMeta().getColor()));
         }
+//        if (recipe != null) {
+//            viewHolder.textViewItem.setText(Html.fromHtml(mRecipes.get(position).toHtmlSummary()));
+//            GradientDrawable background = (GradientDrawable)viewHolder.textViewItem.getBackground().mutate();
+//            background.setColor(Color.parseColor(recipe.getMeta().getColor()));
+//            background.invalidateSelf();
+//        }
+
 
         return convertView;
     }

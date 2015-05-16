@@ -1,6 +1,7 @@
 package com.mherkert.nomnom.domain;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -9,6 +10,8 @@ public class Recipe implements Serializable{
     String description;
     List<String> ingredients;
     List<String> instructions;
+    Date created;
+    Date modified;
     Meta meta;
 
     public Recipe(String title, String description) {
@@ -16,11 +19,12 @@ public class Recipe implements Serializable{
         this.description = description;
     }
 
-    public Recipe(String title, String description, List<String> ingredients, List<String> instructions) {
+    public Recipe(String title, String description, List<String> ingredients, List<String> instructions, Meta meta) {
         this.title = title;
         this.description = description;
         this.ingredients = ingredients;
         this.instructions = instructions;
+        this.meta = meta;
     }
 
     public void addIngredient(String ingredient) {
@@ -94,6 +98,22 @@ public class Recipe implements Serializable{
 
     public void setInstructions(List<String> instructions) {
         this.instructions = instructions;
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
+    public Date getModified() {
+        return modified;
+    }
+
+    public void setModified(Date modified) {
+        this.modified = modified;
     }
 
     public Meta getMeta() {

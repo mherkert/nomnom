@@ -17,16 +17,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.getbase.floatingactionbutton.FloatingActionsMenu
-            xmlns:android="http://schemas.android.com/apk/res/android"
+        <View
+            android:id="@+id/translucent_pane"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <com.getbase.floatingactionbutton.FloatingActionsMenu xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/floating_action_menu"
+            android:id="@+id/add_recipe_menu"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="16dp"
-            android:layout_marginEnd="16dp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
             app:fab_addButtonColorNormal="@color/button_green"
             app:fab_addButtonColorPressed="@color/button_green"
             app:fab_labelsPosition="left">
@@ -37,21 +41,22 @@
                 android:id="@+id/add_recipe_from_text_button"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                app:fab_icon="@drawable/ic_action_view_as_list"
                 app:fab_colorNormal="@color/background_green"
                 app:fab_colorPressed="@color/background_green"
-                app:fab_expandDirection="up" />
+                app:fab_expandDirection="up"
+                app:fab_icon="@drawable/ic_action_view_as_list" />
 
             <com.getbase.floatingactionbutton.FloatingActionButton
                 android:id="@+id/add_recipe_from_image_button"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                app:fab_icon="@drawable/ic_action_camera"
                 app:fab_colorNormal="@color/background_green"
                 app:fab_colorPressed="@color/background_green"
-                app:fab_expandDirection="up" />
+                app:fab_expandDirection="up"
+                app:fab_icon="@drawable/ic_action_camera" />
 
         </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
     </RelativeLayout>
 
 </RelativeLayout>

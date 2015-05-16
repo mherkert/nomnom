@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 
 import com.etsy.android.grid.StaggeredGridView;
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.mherkert.nomnom.R;
 import com.mherkert.nomnom.domain.Recipes;
 
@@ -21,10 +22,14 @@ public class RecipesFragment extends Fragment {
 
     public interface RecipeFragmentCallbacks {
         void onRecipeItemSelected(int position);
+        void onAddRecipeFromImageSelected();
+        void onAddRecipeFromTextSelected();
     }
 
     private Recipes mRecipes;
     private RecipeFragmentCallbacks mCallback;
+    private StaggeredGridView mGridView;
+    private View mTranslucentPane;
 
     public static RecipesFragment newInstance(Recipes recipes) {
         RecipesFragment fragment = new RecipesFragment();
@@ -52,8 +57,10 @@ public class RecipesFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        StaggeredGridView gridView = (StaggeredGridView) getActivity().findViewById(R.id.recipes_grid);
+        mTranslucentPane  = getActivity().findViewById(R.id.translucent_pane);
+        mGridView = (StaggeredGridView) getActivity().findViewById(R.id.recipes_grid);
 
+        FloatingActionsMenu addRecipeMenu = (FloatingActionsMenu) getActivity().findViewById(R.id.add_recipe_menu);
         FloatingActionButton addFromImageBtn = (FloatingActionButton) getActivity().findViewById(R.id.add_recipe_from_image_button);
         FloatingActionButton addFromTextBtn = (FloatingActionButton) getActivity().findViewById(R.id.add_recipe_from_text_button);
 
@@ -61,9 +68,37 @@ public class RecipesFragment extends Fragment {
         addFromImageBtn.setSize(FloatingActionButton.SIZE_MINI);
         addFromTextBtn.setSize(FloatingActionButton.SIZE_MINI);
 
+        addRecipeMenu.setOnFloatingActionsMenuUpdateListener(new FloatingActionsMenu.OnFloatingActionsMenuUpdateListener() {
+            @Override
+            public void onMenuExpanded() {
+                mTranslucentPane.setBackgroundColor(getResources().getColor(R.color.half_translucent));
+                mGridView.setEnabled(false);
+            }
+
+            @Override
+            public void onMenuCollapsed() {
+                mTranslucentPane.setBackgroundColor(getResources().getColor(R.color.translucent));
+                mGridView.setEnabled(true);
+            }
+        });
+
+        addFromImageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCallback.onAddRecipeFromImageSelected();
+            }
+        });
+
+        addFromTextBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCallback.onAddRecipeFromTextSelected();
+            }
+        });
+
         RecipeViewAdapter mAdapter = new RecipeViewAdapter(getActivity(), mRecipes.getRecipes());
-        gridView.setAdapter(mAdapter);
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mGridView.setAdapter(mAdapter);
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, android.view.View v,
                                     int position, long id) {

@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.mherkert.nomnom.domain.Recipes;
 import com.mherkert.nomnom.fragments.NavigationDrawerFragment;
@@ -20,8 +21,6 @@ import com.mherkert.nomnom.fragments.RecipeFragment;
 import com.mherkert.nomnom.fragments.RecipesFragment;
 import com.mherkert.nomnom.parser.RecipesParser;
 import com.mherkert.nomnom.utils.FileUtils;
-
-import org.json.JSONException;
 
 
 public class MainActivity extends LifecycleLoggingActivity
@@ -61,12 +60,9 @@ public class MainActivity extends LifecycleLoggingActivity
 
 
         // TODO retain data
-        String text = FileUtils.loadData(this, R.raw.recipes);
-        try {
-            mRecipes = new Recipes(parser.toDomain(text));
-        } catch (JSONException e) {
-            Log.i(TAG, "JSONException");
-        }
+        String text = FileUtils.loadDataFromFile();
+//        String text = FileUtils.loadData(this, R.raw.recipes);
+        mRecipes = new Recipes(parser.toDomain(text));
 
         // TODO retain instances?
 //        mRecipesFragment = new RecipesFragment();
@@ -78,7 +74,13 @@ public class MainActivity extends LifecycleLoggingActivity
         fragmentManager.beginTransaction()
                 .replace(R.id.container, mRecipesFragment)
                 .commit();
+    }
 
+    @Override
+    public void onPause(){
+        super.onPause();
+        Log.d(TAG, "Persist recipes. Number of items: " + mRecipes.getRecipes().size());
+        FileUtils.writeDataToFile(parser.toJson(mRecipes.getRecipes()));
     }
 
     @Override
@@ -154,6 +156,16 @@ public class MainActivity extends LifecycleLoggingActivity
         fragmentManager.executePendingTransactions();
 
         mRecipeFragment.updateRecipeDisplay(this, mRecipes.getRecipes().get(position));
+    }
+
+    @Override
+    public void onAddRecipeFromImageSelected() {
+        Toast.makeText(this, "Open Camera", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onAddRecipeFromTextSelected() {
+        Toast.makeText(this, "Open New Recipe TextEdit", Toast.LENGTH_SHORT).show();
     }
 
     /**

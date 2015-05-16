@@ -13,7 +13,10 @@
         android:paddingEnd="@dimen/text_view_horizontal_margin"
         android:paddingTop="@dimen/text_view_horizontal_margin"
         android:paddingBottom="@dimen/text_view_horizontal_margin"
-        android:contentDescription="@string/item_recipe_tv_desc">
+        android:background="@drawable/shadow"
+        android:contentDescription="@string/item_recipe_tv_desc"
+        >
+        <!--android:background="@drawable/view_background"-->
     </TextView>
 
 </LinearLayout>

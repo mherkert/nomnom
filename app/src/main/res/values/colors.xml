@@ -9,6 +9,8 @@
     <!--<color name="actionbar_background">#FF6DA820</color>-->
 
     <color name="view_shadow">#7F000000</color>
+    <color name="translucent">#00000000</color>
+    <color name="half_translucent">#7F000000</color>
 
     <!-- Color theme green -->
     <!--<color name="background_green">#FFEEF8A6</color>-->
