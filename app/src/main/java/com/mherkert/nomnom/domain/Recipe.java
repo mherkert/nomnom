@@ -14,9 +14,11 @@ public class Recipe implements Serializable{
     Date modified;
     Meta meta;
 
-    public Recipe(String title, String description) {
+    public Recipe(String title, String description, List<String> ingredients, List<String> instructions) {
         this.title = title;
         this.description = description;
+        this.ingredients = ingredients;
+        this.instructions = instructions;
     }
 
     public Recipe(String title, String description, List<String> ingredients, List<String> instructions, Meta meta) {

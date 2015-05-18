@@ -19,7 +19,8 @@ import com.mherkert.nomnom.domain.Recipes;
 import com.mherkert.nomnom.fragments.NavigationDrawerFragment;
 import com.mherkert.nomnom.fragments.RecipeFragment;
 import com.mherkert.nomnom.fragments.RecipesFragment;
-import com.mherkert.nomnom.parser.RecipesParser;
+import com.mherkert.nomnom.ocr.TesseractOcrImageReader;
+import com.mherkert.nomnom.parser.RecipesJsonParser;
 import com.mherkert.nomnom.utils.FileUtils;
 
 
@@ -42,7 +43,7 @@ public class MainActivity extends LifecycleLoggingActivity
     private RecipesFragment mRecipesFragment;
     private RecipeFragment mRecipeFragment;
 
-    private RecipesParser parser = new RecipesParser();
+    private RecipesJsonParser parser = new RecipesJsonParser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,10 +66,6 @@ public class MainActivity extends LifecycleLoggingActivity
         mRecipes = new Recipes(parser.toDomain(text));
 
         // TODO retain instances?
-//        mRecipesFragment = new RecipesFragment();
-//        Bundle data = new Bundle();
-//        data.putSerializable("RECIPES", mRecipes);
-//        mRecipeFragment.setArguments(data);
         mRecipesFragment = RecipesFragment.newInstance(mRecipes);
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
@@ -160,7 +157,10 @@ public class MainActivity extends LifecycleLoggingActivity
 
     @Override
     public void onAddRecipeFromImageSelected() {
-        Toast.makeText(this, "Open Camera", Toast.LENGTH_SHORT).show();
+        TesseractOcrImageReader imageReader = new TesseractOcrImageReader();
+        String s = imageReader.imageToText("/storage/sdcard/Documents/com.mherkert.nomnom/harissa_recipe.jpg");
+        Log.d(TAG, s);
+        Toast.makeText(this, s, Toast.LENGTH_LONG).show();
     }
 
     @Override

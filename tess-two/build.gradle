@@ -1,0 +1,46 @@
+//apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 22
+//    buildToolsVersion "19.1.0"
+    buildToolsVersion "22.0.1"
+
+
+    defaultConfig {
+//        applicationId "com.googlecode.tesseract.android"
+        minSdkVersion 8
+        targetSdkVersion 22
+//        targetSdkVersion 20
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+}
+
+
+dependencies {
+    testCompile 'junit:junit:4.12'
+
+}
+
+//task nativeLibsToJar(type: Zip, description: 'Creates a jar archive of the native libraries') {
+//    println "Create Jar with native Libraries"
+//    println "buildDir: $buildDir"
+//    destinationDir file("$buildDir/native-libs")
+//    baseName 'native-libs'
+//    extension 'jar'
+//
+//    def tree = fileTree(dir: 'native-libs', include: '**/*.so')
+//    println tree
+//    from tree
+//    into 'lib/'
+//}
+//
+//tasks.withType(JavaCompile) {
+//    compileTask -> compileTask.dependsOn(nativeLibsToJar)
+//}
