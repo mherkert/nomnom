@@ -1,7 +1,11 @@
 package com.mherkert.nomnom;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -15,19 +19,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.mherkert.nomnom.domain.ActivityResult;
 import com.mherkert.nomnom.domain.Recipes;
 import com.mherkert.nomnom.fragments.NavigationDrawerFragment;
+import com.mherkert.nomnom.fragments.RecipeAddDialogFragment;
+import com.mherkert.nomnom.fragments.RecipeAddFragment;
 import com.mherkert.nomnom.fragments.RecipeFragment;
 import com.mherkert.nomnom.fragments.RecipesFragment;
-import com.mherkert.nomnom.ocr.TesseractOcrImageReader;
 import com.mherkert.nomnom.parser.RecipesJsonParser;
 import com.mherkert.nomnom.utils.FileUtils;
 
+import java.io.File;
+import java.io.IOException;
+
 
 public class MainActivity extends LifecycleLoggingActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks, RecipesFragment.RecipeFragmentCallbacks {
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks, RecipesFragment.RecipeFragmentCallbacks,
+        RecipeAddDialogFragment.RecipeAddDialogFragmentCallbacks {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+
+    private static final int REQUEST_PHOTO_CAPTURE = 1;
+    private static final int REQUEST_PHOTO_SELECT = 2;
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -40,8 +53,12 @@ public class MainActivity extends LifecycleLoggingActivity
 
     private Recipes mRecipes;
 
+    private Uri mCurrentPhotoUri;
+    private ActivityResult mActivityResult;
+
     private RecipesFragment mRecipesFragment;
     private RecipeFragment mRecipeFragment;
+    private RecipeAddFragment mRecipeAddFragment;
 
     private RecipesJsonParser parser = new RecipesJsonParser();
 
@@ -61,7 +78,7 @@ public class MainActivity extends LifecycleLoggingActivity
 
 
         // TODO retain data
-        String text = FileUtils.loadDataFromFile();
+        String text = FileUtils.loadRecipesFromFile();
 //        String text = FileUtils.loadData(this, R.raw.recipes);
         mRecipes = new Recipes(parser.toDomain(text));
 
@@ -74,7 +91,7 @@ public class MainActivity extends LifecycleLoggingActivity
     }
 
     @Override
-    public void onPause(){
+    public void onPause() {
         super.onPause();
         Log.d(TAG, "Persist recipes. Number of items: " + mRecipes.getRecipes().size());
         FileUtils.writeDataToFile(parser.toJson(mRecipes.getRecipes()));
@@ -156,16 +173,140 @@ public class MainActivity extends LifecycleLoggingActivity
     }
 
     @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        if (mActivityResult != null) {
+            int requestCode = mActivityResult.getRequestCode();
+            int resultCode = mActivityResult.getResultCode();
+            Intent data = mActivityResult.getData();
+            if (requestCode == REQUEST_PHOTO_CAPTURE) {
+                if (resultCode == RESULT_OK) {
+                    if (mRecipeAddFragment == null)
+                        mRecipeAddFragment = new RecipeAddFragment();
+
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.container, mRecipeAddFragment);
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
+                    fragmentManager.executePendingTransactions();
+
+                    mRecipeAddFragment.updateRecipeAddDisplay(this, mCurrentPhotoUri);
+
+                } else if (resultCode == RESULT_CANCELED) {
+                    // if cancelled, delete the current temporary file
+
+                    if (mCurrentPhotoUri != null) {
+                        FileUtils.deleteFile(mCurrentPhotoUri.getPath());
+                    }
+                }
+            } else if (requestCode == REQUEST_PHOTO_SELECT) {
+                if (resultCode == RESULT_OK) {
+                    if (mRecipeAddFragment == null)
+                        mRecipeAddFragment = new RecipeAddFragment();
+
+                    // TODO copy photo first?
+                    mCurrentPhotoUri = data.getData();
+
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.container, mRecipeAddFragment);
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
+                    fragmentManager.executePendingTransactions();
+
+                    mRecipeAddFragment.updateRecipeAddDisplay(this, mCurrentPhotoUri);
+                }
+            }
+        }
+
+        mActivityResult = null;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mActivityResult = new ActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
     public void onAddRecipeFromImageSelected() {
-        TesseractOcrImageReader imageReader = new TesseractOcrImageReader();
-        String s = imageReader.imageToText("/storage/sdcard/Documents/com.mherkert.nomnom/harissa_recipe.jpg");
-        Log.d(TAG, s);
-        Toast.makeText(this, s, Toast.LENGTH_LONG).show();
+
+        RecipeAddDialogFragment recipeAddDialogFragment = new RecipeAddDialogFragment();
+        recipeAddDialogFragment.show(getSupportFragmentManager(), "RecipeAddDialogFragment");
+
+//        TesseractOcrImageReader imageReader = new TesseractOcrImageReader();
+//        String s = imageReader.imageToText("/storage/sdcard/Documents/com.mherkert.nomnom/high_res.jpg");
+//        String s = imageReader.imageToText("/storage/sdcard/Documents/com.mherkert.nomnom/high_res_Fotor.jpg");
+//        String s = imageReader.imageToText("/storage/sdcard/Documents/com.mherkert.nomnom/high_res_filter.png");
+//        String s = imageReader.imageToText("/storage/sdcard/Documents/com.mherkert.nomnom/high_res_filter.jpg");
+//        String s = imageReader.imageToText("/storage/sdcard/Documents/com.mherkert.nomnom/high_res_Fotor.png");
+//        String s = imageReader.imageToText("/storage/sdcard/Documents/com.mherkert.nomnom/ingredients.jpg");
+//        String s = imageReader.imageToText("/storage/sdcard/Documents/com.mherkert.nomnom/harissa_recipe_new.png");
+//        Log.d(TAG, s);
+//        Toast.makeText(this, s, Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onAddRecipeFromTextSelected() {
+        Log.d(TAG, "Attach AddRecipe fragment to add new recipe.");
         Toast.makeText(this, "Open New Recipe TextEdit", Toast.LENGTH_SHORT).show();
+    }
+
+    private boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        return Environment.MEDIA_MOUNTED.equals(state);
+    }
+
+    private void dispatchChoosePhotoIntent() {
+        Log.d(TAG, "Open gallery to choose a photo.");
+
+        Intent choosePhotoIntent = new Intent();
+        choosePhotoIntent.setType("image/*");
+        choosePhotoIntent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(choosePhotoIntent,
+                "Select Photo"), REQUEST_PHOTO_SELECT);
+    }
+
+
+    private void dispatchTakePhotoIntent() {
+        Log.d(TAG, "Open camera to take new photo.");
+        if (!isExternalStorageWritable())
+            showStorageNotAvailableError();
+        else {
+            Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            // Ensure that there's a camera activity to handle the intent
+            if (takePhotoIntent.resolveActivity(getPackageManager()) != null) {
+                // Create the file where the photo should be stored
+                File image = null;
+                try {
+                    image = FileUtils.createImageFile();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+                // Continue only if the file was successfully created
+                if (image != null) {
+                    mCurrentPhotoUri = Uri.fromFile(image);
+                    Log.d(TAG, "Save temporary recipe picture at " + mCurrentPhotoUri);
+                    takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCurrentPhotoUri);
+                    startActivityForResult(takePhotoIntent, REQUEST_PHOTO_CAPTURE);
+                }
+            }
+        }
+    }
+
+    private void showStorageNotAvailableError() {
+        Toast.makeText(this, R.string.error_no_storage_available, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onDialogOpenCameraClick() {
+        dispatchTakePhotoIntent();
+    }
+
+    @Override
+    public void onDialogOpenGalleryClick() {
+        dispatchChoosePhotoIntent();
     }
 
     /**
